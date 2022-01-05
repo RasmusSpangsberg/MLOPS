@@ -1,13 +1,13 @@
-import argparse
-import sys
 import os
 
 import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import TensorDataset
+import numpy as np
 
 from model import MyAwesomeModel
+import matplotlib.pyplot as plt
 
 
 def train():
@@ -24,10 +24,12 @@ def train():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.003)
 
-    epochs = 40
+    losses = []
+
+    epochs = 30
     for e in range(epochs):
-        running_loss = 0
         print("epoch:", e)
+        running_loss = 0
         for images, labels in train_loader:
             optimizer.zero_grad()
 
@@ -36,8 +38,16 @@ def train():
             loss.backward()
             optimizer.step()
 
-            running_loss = loss.item()
-        print(running_loss)
+            running_loss += loss.item()
+        print("loss:", running_loss)
+        losses.append(running_loss)
+
+    plt.plot(list(range(epochs)), losses)
+    plt.xticks(np.arange(0, epochs, 1))
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.savefig("reports/figures/training_run.png")
+
     torch.save(model.state_dict(), 'models/checkpoint.pth')
 
 
