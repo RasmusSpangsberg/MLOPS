@@ -1,0 +1,4 @@
+src.egg-info/
+.idea/
+data/
+__pycache__/
