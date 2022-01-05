@@ -1,30 +1,38 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import torch
+import numpy as np
+import os
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+def mnist():
+    root = r"/Users/rasmusspangsberg/Documents/DTU/semester1/3uger/dtu_mlops/data/corruptmnist/"
 
+    # train data set, we have 5 different data sets
+    images = np.empty([0, 1, 28, 28], dtype=np.float32)
+    labels = np.empty([0], dtype=np.long)
+    for i in range(5):
+        path = os.path.join(root, "train_" + str(i) + ".npz")
+        with np.load(path) as data:
+            a = data["images"]
+            a = a.reshape(a.shape[0], 1, 28, 28)
+            a = a.astype(np.float32)
+            images = np.concatenate((images, a), axis=0)
+            labels = np.concatenate((labels, data["labels"].astype(np.long)))
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+    train_data_set = torch.utils.data.TensorDataset(
+        torch.from_numpy(images), torch.from_numpy(labels))
+    train_loader = torch.utils.data.DataLoader(train_data_set, batch_size=64, shuffle=True)
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+    # test data set, only a single data set
+    path = os.path.join(root, "test.npz")
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+    with np.load(path) as data:
+        images = data["images"]
+        images = images.reshape(images.shape[0], 1, 28, 28)
+        images = images.astype(np.float32)
+        labels = data["labels"]
 
-    main()
+    test_data_set = torch.utils.data.TensorDataset(
+        torch.from_numpy(images), torch.from_numpy(labels))
+    test_loader = torch.utils.data.DataLoader(test_data_set, batch_size=len(test_data_set), shuffle=False)
+
+    return train_loader, test_loader
