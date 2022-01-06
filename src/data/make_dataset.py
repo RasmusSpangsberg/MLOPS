@@ -1,4 +1,5 @@
 import torch
+from torch.utils.data import TensorDataset
 import numpy as np
 import os
 
@@ -25,8 +26,8 @@ def mnist():
     images = torch.from_numpy(images).type(torch.FloatTensor)
     labels = torch.from_numpy(labels).type(torch.LongTensor)
 
-    torch.save(images, os.path.join(processed_data_path, "train_image.pth"))
-    torch.save(labels, os.path.join(processed_data_path, "train_labels.pth"))
+    data_set = TensorDataset(images, labels)
+    torch.save(data_set, os.path.join(processed_data_path, "train.pth"))
 
     # test data set, only a single data set
     path = os.path.join(raw_data_path, "test.npz")
@@ -40,8 +41,8 @@ def mnist():
     images = torch.from_numpy(images).type(torch.FloatTensor)
     labels = torch.from_numpy(labels).type(torch.LongTensor)
 
-    torch.save(images, os.path.join(processed_data_path, "test_image.pth"))
-    torch.save(labels, os.path.join(processed_data_path, "test_labels.pth"))
+    data_set = TensorDataset(images, labels)
+    torch.save(data_set, os.path.join(processed_data_path, "test.pth"))
 
 
 if __name__ == "__main__":

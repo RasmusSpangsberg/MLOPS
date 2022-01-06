@@ -1,4 +1,5 @@
-import os
+import argparse
+import sys
 
 import torch
 from torch import nn
@@ -11,14 +12,13 @@ import matplotlib.pyplot as plt
 
 
 def train():
-    print("Training day and night")
+    print("Training started...")
+    parser = argparse.ArgumentParser(description='Evaluation arguments')
+    parser.add_argument('load_data_from', default="")
+    args = parser.parse_args(sys.argv[1:])
 
-    data_root = r"data/processed/corruptmnist"
-    train_images = torch.load(os.path.join(data_root, "train_image.pth"))
-    train_labels = torch.load(os.path.join(data_root, "train_labels.pth"))
-
-    data_set = TensorDataset(train_images, train_labels)
-    train_loader = torch.utils.data.DataLoader(data_set, batch_size=64)
+    train_data = torch.load(args.load_data_from)
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=len(train_data), shuffle=False)
 
     model = MyAwesomeModel()
     criterion = nn.CrossEntropyLoss()
@@ -43,7 +43,6 @@ def train():
         losses.append(running_loss)
 
     plt.plot(list(range(epochs)), losses)
-    plt.xticks(np.arange(0, epochs, 1))
     plt.xlabel("epoch")
     plt.ylabel("loss")
     plt.savefig("reports/figures/training_run.png")
