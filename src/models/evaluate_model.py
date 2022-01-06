@@ -1,10 +1,9 @@
-import torch
-from torch.utils.data import DataLoader
-
 import argparse
 import sys
 
+import torch
 from model import MyAwesomeModel
+from torch.utils.data import DataLoader
 
 
 def evaluate():
