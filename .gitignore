@@ -2,3 +2,5 @@ src.egg-info/
 .idea/
 data/
 __pycache__/
+reports/
+models/
