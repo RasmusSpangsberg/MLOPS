@@ -4,8 +4,7 @@ import sys
 import torch
 from torch import nn
 from torch import optim
-from torch.utils.data import TensorDataset
-import numpy as np
+from torch.utils.data import DataLoader
 
 from model import MyAwesomeModel
 import matplotlib.pyplot as plt
@@ -18,7 +17,8 @@ def train():
     args = parser.parse_args(sys.argv[1:])
 
     train_data = torch.load(args.load_data_from)
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=len(train_data), shuffle=False)
+    train_loader = DataLoader(train_data, batch_size=len(train_data),
+                              shuffle=False)
 
     model = MyAwesomeModel()
     criterion = nn.CrossEntropyLoss()

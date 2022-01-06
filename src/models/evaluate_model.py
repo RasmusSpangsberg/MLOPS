@@ -1,5 +1,5 @@
 import torch
-from torch.utils.data import TensorDataset
+from torch.utils.data import DataLoader
 
 import argparse
 import sys
@@ -8,6 +8,8 @@ from model import MyAwesomeModel
 
 
 def evaluate():
+    """Evaluates the given model on the given data set,
+    printing the accuracy."""
     # parsing
     print("Evaluating until hitting the ceiling")
     parser = argparse.ArgumentParser(description='Evaluation arguments')
@@ -22,7 +24,8 @@ def evaluate():
 
     # data loading
     test_data = torch.load(args.load_data_from)
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=len(test_data), shuffle=False)
+    test_loader = DataLoader(test_data, batch_size=len(test_data),
+                             shuffle=False)
 
     # evaluation
     for images, labels in test_loader:
