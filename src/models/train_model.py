@@ -15,7 +15,7 @@ def train():
     args = parser.parse_args(sys.argv[1:])
 
     train_data = torch.load(args.load_data_from)
-    train_loader = DataLoader(train_data, batch_size=len(train_data),
+    train_loader = DataLoader(train_data, batch_size=64,
                               shuffle=False)
 
     model = MyAwesomeModel()
