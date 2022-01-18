@@ -24,7 +24,7 @@ def train():
 
     losses = []
 
-    epochs = 30
+    epochs = 60
     for e in range(epochs):
         print("epoch:", e)
         running_loss = 0

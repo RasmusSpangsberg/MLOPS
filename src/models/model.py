@@ -13,6 +13,12 @@ class MyAwesomeModel(nn.Module):
         self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
+        if x.ndim != 4:
+            raise ValueError('Expected input to a 4D tensor')
+
+        if x.shape[1] != 1 or x.shape[2] != 28 or x.shape[3] != 28:
+            raise ValueError('Expected each sample to have shape [1, 28, 28]')
+
         # make sure input tensor is flattened
         x = x.view(x.shape[0], -1)
 
